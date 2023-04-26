@@ -8,6 +8,9 @@ class RPN
 {
 	public:
 		RPN(std::string);
+		~RPN();
+		RPN &operator=(const RPN &);
+		RPN(const RPN &);
 		void	run();
 	private:
 		std::stack<double> store;

@@ -8,12 +8,14 @@
 class BitcoinExchange
 {
 	public:
+		BitcoinExchange();
+		~BitcoinExchange();
+		BitcoinExchange(const BitcoinExchange &);
+		BitcoinExchange &operator=(const BitcoinExchange &);
 		void	parse_files(std::string );
 	private:
 		std::map<std::string, double> _data;
-		std::fstream _file;
-		std::fstream _inputf;
-		void	check_file(std::string , std::fstream &);
+		void	check_file(std::string);
 		void	clear_spaces(std::string &);
 		void	store();
 		struct my_expt: public std::exception

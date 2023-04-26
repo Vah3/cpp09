@@ -4,6 +4,24 @@ PmergeMe::PmergeMe()
 {
 }
 
+PmergeMe::~PmergeMe()
+{
+}
+
+PmergeMe &PmergeMe::operator=(const PmergeMe &ob)
+{
+	if (this == &ob)
+		return *this;
+	this->seq = ob.seq;
+	this->lst = ob.lst;
+	return *this;
+}
+
+PmergeMe::PmergeMe(const PmergeMe &ob)
+{
+	*this = ob;
+}
+
 bool PmergeMe::check_input(char **arg)
 {
 	size_t i = 1, j = 0;
@@ -29,7 +47,8 @@ bool PmergeMe::check_input(char **arg)
 }
 
 
-void	PmergeMe::store_in_vec(char **arg)
+template <typename T>
+void	PmergeMe::store_in_cont(char **arg, T & container)
 {
 	size_t i = 1;
 	std::string big_line;
@@ -46,27 +65,9 @@ void	PmergeMe::store_in_vec(char **arg)
 	{
 		if (single_num.size() == 0)
 			continue ;
-		seq.push_back(atoi(single_num.c_str()));
-		lst.push_back(atoi(single_num.c_str()));
+		container.push_back(atoi(single_num.c_str()));
 	}
 }
-
-/*
-void	PmergeMe::rec_divide(vecit beg, vecit end)
-{
-	int mid = end - beg + 1;
-		std::cout << "count -> " << mid << std::endl;
-		std::cout << "beg -> " << *beg << std::endl;
-		std::cout << "end -> " << *end << std::endl;
-	if (mid == 3)
-		mid = 1;
-	else
-	mid = mid / 2 - 1;
-		std::cout << "mid -> " << mid << std::endl;
-		std::cout << "first end -> " << *(beg + mid) << std::endl;
-		std::cout << "beg -> " << *(end - mid) << std::endl;
-		std::cout << "end -> " << *end << std::endl;
-}*/
 
 void PmergeMe::bouble(vecit beg, vecit end)
 {
@@ -101,8 +102,36 @@ void	PmergeMe::insertion(vecit beg, size_t count)
 
 void	PmergeMe::insertion(lstit beg, size_t count)
 {
-	(void) count;
-	(void) beg;
+	unsigned int x;
+	lstit next;
+	lstit  curr = beg;;
+	size_t for_range;
+	for (size_t i = 1; i < count; i++)
+	{
+		for_range = i;
+		next = beg;
+		curr= beg;
+		for (size_t k = 0; k < i; k++)
+		{
+			if ( k != i - 1)
+				curr++;
+			next++;
+		}
+		while ( *next < *curr)
+		{
+			x = *next;
+			*next = *curr;
+			*curr = x;
+			if (for_range > 1)
+			{
+				--next;
+				--curr;
+				for_range--;
+			}
+			else
+				break;
+		}
+	}
 }
 
 void	PmergeMe::rec_divide(vecit beg, vecit end)
@@ -125,13 +154,12 @@ void	PmergeMe::rec_divide(vecit beg, vecit end)
 				mid = count / 2;
 				sec_beg = mid - 1;
 			}
-			std::cout << "midle -> " << *(end - sec_beg) << std::endl;
 			rec_divide(beg, beg + mid);
 			rec_divide(end - sec_beg, end);
 		}
 		//	bouble(beg,end);
-			insertion(beg, count);
 	}
+			insertion(beg, count);
 	return ;
 }
 
@@ -144,13 +172,6 @@ void	PmergeMe::rec_divide(lstit beg, lstit end)
 	for (lstit it = beg; it != end; it++)
 		count++;
 	count++;
-	for (lstit it = beg; it != end; it++)
-	{
-	 	std::cout << *it << "_";
-	}
-
-	 	std::cout << *end << "_";
-	 	std::cout << "count -> " << count << std::endl;
 	
 	if (count >= macro_size) //macro_size is a macro
 	{
@@ -171,67 +192,116 @@ void	PmergeMe::rec_divide(lstit beg, lstit end)
 				for_rec++;
 				--mid;
 			}
-
-			std::cout << "midle -> " << *for_rec << std::endl;
 			rec_divide(beg, for_rec);
 			for_rec++;
 			rec_divide(for_rec, end);
 		}
+	}
 		//	bouble(beg,end);
 			insertion(beg, count);
-	}
 	return ;
 }
 
-double ft_get_correct_mls_time(struct timeval t1, struct timeval t2)
+double PmergeMe::ft_get_correct_mls_time(struct timeval &t1, struct timeval &t2)
 {
-	return ( ((t2.tv_sec - t1.tv_sec) * 1000000 + t2.tv_usec - t1.tv_usec) / 1000000.0);
+	return ( (t2.tv_sec - t1.tv_sec) * 1000 + (t2.tv_usec - t1.tv_usec) / 1000.0);
 }
 
-void	PmergeMe::sort(char **arg)
+void	PmergeMe::sortVector(char **arg)
 {
 	struct timeval start_time;
 	struct timeval end_time;
+
+	gettimeofday(&start_time, NULL);
+	store_in_cont(arg,seq);
+	std::cout << "\033[1;31mVector before sort -> \033[0m";
+	for (size_t i = 0; i < seq.size(); i++)
+	{
+		std::cout << "\033[1;36m" <<  seq[i] << " \033[0m" ;
+		if ( i == 7)
+		{
+			std::cout << "\033[1;33m[...]\033[0m";
+			break ;
+		}
+	}
+	std::cout << std::endl;
+	rec_divide(seq.begin(),seq.end() - 1);
+//	std::sort(seq.begin(),seq.end());
+	gettimeofday(&end_time, NULL);
+	std::cout << "\033[1;32m Vector after sort -> \033[0m";
+	for (size_t i = 0; i < seq.size(); i++)
+	{
+		std::cout << "\033[1;36m" << seq[i] << " \033[0m" ;
+		if ( i == 7)
+		{
+			std::cout << "\033[1;33m[...]\033[0m";
+			break ;
+		}
+	}
+	std::cout << std::endl;
+	std::cout << "\033[1;21m Time for sorting, using vector -> " << ft_get_correct_mls_time(start_time, end_time) << "ms" << "\033[0m" << std::endl;
+}
+
+void	PmergeMe::sortList(char **arg)
+{
+	struct timeval start_time;
+	struct timeval end_time;
+	
+	gettimeofday(&start_time, NULL); //stor in list
+	std::cout << "\033[1;31mList before sort -> \033[0m";
+	size_t i = 0;
+	store_in_cont(arg, lst);
+	for (std::list<unsigned int >::iterator it = lst.begin(); i < seq.size(); it++)
+	{
+		std::cout << "\033[1;36m" << *it << " \033[0m" ;
+		if ( i == 7)
+		{
+			std::cout << "\033[1;33m[...]\033[0m";
+			break ;
+		}
+		i++;
+	}
+	std::cout << std::endl;
+	lstit last= lst.end();
+	last--;
+	rec_divide(lst.begin(),last);
+	std::cout << "\033[1;32m List after sort -> \033[0m";
+	i = 0;
+	store_in_cont(arg, lst);
+	for (std::list<unsigned int >::iterator it = lst.begin(); i < seq.size(); it++)
+	{
+		std::cout << "\033[1;36m" << *it << " \033[0m" ;
+		if (i == 7)
+		{
+			std::cout << "\033[1;33m[...]\033[0m";
+			break ;
+		}
+		i++;
+	}
+	std::cout << std::endl;
+	gettimeofday(&end_time, NULL);
+	std::cout << "\033[1;21m Time for sorting, using lst -> " << ft_get_correct_mls_time(start_time, end_time) << "ms" << "\033[0m" <<std::endl;
+}
+void	PmergeMe::sort(char **arg)
+{
 	if(!check_input(arg))
 	{
 		std::cout << "Error: something wrong" << std::endl;
 		return ;
 	}
-	gettimeofday(&start_time, NULL);
-	store_in_vec(arg);
-
-	for (lstit it = lst.begin(); it != lst.end();it++)
-	{
-		std::cout << *it  << "_";
-	}
-	std::cout << std::endl;
-	rec_divide(seq.begin(),seq.end() - 1);
-//	bouble(seq.begin(),seq.end());
-	gettimeofday(&end_time, NULL);
-	std::cout << "\nTime for sorting, using vector -> " << ft_get_correct_mls_time(start_time, end_time) << std::endl;
-	gettimeofday(&start_time, NULL);
-	lstit last= lst.end();
-	last--;
-	rec_divide(lst.begin(),last);
-	gettimeofday(&end_time, NULL);
-	std::cout << "\nTime for sorting, using lst -> " << ft_get_correct_mls_time(start_time, end_time) << std::endl;
-	for (size_t i = 0; i <  seq.size();i++)
-	{
-		std::cout << seq[i] << " ";
-	}
-	std::cout << std::endl;
-	for (lstit it = lst.begin(); it !=  lst.end();it++)
-	{
-		std::cout << *it << " ";
-	}
-	std::cout << std::endl;
+	sortVector(arg);
+	sortList(arg);
 }
 
 
 int main(int argc, char **argv)
 {
 	if (argc == 1)
+	{
+		std::cout << "Error: wrong argument count" << std::endl;
 		return 1;
+	}
 	PmergeMe ob;
 	ob.sort(argv);
+	return 0;
 }

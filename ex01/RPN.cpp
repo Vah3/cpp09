@@ -5,6 +5,24 @@ RPN::RPN(std::string line)
 	this->_line = line;
 }
 
+RPN::~RPN()
+{
+}
+
+RPN &RPN::operator=(const RPN & ob)
+{
+	if (this == &ob)
+		return *this;
+	this->store = ob.store;
+	this->_line = ob._line;
+	return *this;
+}
+
+RPN::RPN(const RPN &ob)
+{
+	*this = ob;	
+}
+
 bool RPN::check_input()
 {
 	int operands = 0 , operators = 0;

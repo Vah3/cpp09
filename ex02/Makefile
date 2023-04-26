@@ -3,7 +3,7 @@ NAME		=	pmerge
 
 CPP			=	c++
 
-CXXFLAGS	=	-g -ggdb3 -Wall -Wextra -Werror -std=c++98 #-fsanitize=address
+CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98
 
 SRCS		=	PmergeMe.cpp
 

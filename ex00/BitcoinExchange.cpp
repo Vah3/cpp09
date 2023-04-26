@@ -1,5 +1,27 @@
 # include "BitcoinExchange.hpp"
 
+
+BitcoinExchange::BitcoinExchange()
+{
+}
+
+BitcoinExchange::~BitcoinExchange()
+{
+}
+
+BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &ob)
+{
+	if (this == &ob)
+		return *this;;
+	this->_data = ob._data;
+	return *this;
+}
+
+BitcoinExchange::BitcoinExchange(const BitcoinExchange &ob)
+{
+	*this = ob;
+}
+
 const char *BitcoinExchange::my_expt::what() const throw()
 {
 	return "parse error";
@@ -124,8 +146,10 @@ void	BitcoinExchange::store()
 	std::string line, data;
 	std::stringstream ss;
 	std::string for_map;
+	std::fstream _file;
 	double val;
 
+	_file.open("data.csv", std::fstream::in);
 	std::getline(_file,line);
 	if(line.empty())
 		throw my_expt();
@@ -159,19 +183,22 @@ void	BitcoinExchange::store()
 		ss.str(std::string()); //for stream clear
 		data.clear();
 	}
+	_file.close();
 }
 
 
-void	BitcoinExchange::check_file(std::string name, std::fstream &file)
+void	BitcoinExchange::check_file(std::string name)
 {
+	std::fstream file;
 	file.open(name, std::fstream::in);
 	if (!(file.is_open()))
 		throw my_expt();
+	file.close();
 }
 
 void	BitcoinExchange::parse_files(std::string name)
 {
-	check_file(std::string("data.csv"), _file);
+	check_file(std::string("data.csv"));
 	store();
 	parse_input_file(name);
 }
@@ -180,7 +207,9 @@ void	BitcoinExchange::parse_input_file(std::string name)
 {
 	std::string line , data, find;
 	std::stringstream ss;
-	check_file(name, _inputf);
+	std::fstream _inputf;
+	check_file(name);
+	_inputf.open(name, std::fstream::in);
 	std::getline(_inputf,line);
 	if(line.empty())
 		throw my_expt();
@@ -223,4 +252,5 @@ void	BitcoinExchange::parse_input_file(std::string name)
 			std::cout << "\033[1;31m Error bad date -> " << line << "\033[0m" <<std::endl;
 		ss.str(std::string(""));
 	}
+	_inputf.close();
 }
