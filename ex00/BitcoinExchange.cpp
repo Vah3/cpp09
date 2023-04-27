@@ -190,7 +190,7 @@ void	BitcoinExchange::store()
 void	BitcoinExchange::check_file(std::string name)
 {
 	std::fstream file;
-	file.open(name, std::fstream::in);
+	file.open(name.c_str(), std::fstream::in);
 	if (!(file.is_open()))
 		throw my_expt();
 	file.close();
@@ -209,7 +209,7 @@ void	BitcoinExchange::parse_input_file(std::string name)
 	std::stringstream ss;
 	std::fstream _inputf;
 	check_file(name);
-	_inputf.open(name, std::fstream::in);
+	_inputf.open(name.c_str(), std::fstream::in);
 	std::getline(_inputf,line);
 	if(line.empty())
 		throw my_expt();
