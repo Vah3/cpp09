@@ -1,6 +1,8 @@
 
-NAME		=	pmerge
-
+NAME	=	pmerge
+ifeq ($(OS), Windows_NT)
+	NAME	=	pmerge.exe
+endif
 CPP			=	c++
 
 CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98
@@ -9,8 +11,11 @@ SRCS		=	PmergeMe.cpp
 
 OBJS		=	$(SRCS:.cpp=.o)
 
-RM			=	rm -rf
-
+ifeq ($(OS),Windows_NT)
+	RM		=   del
+else
+	RM		=	rm -rf
+endif
 %.o:%.cpp PmergeMe.hpp
 	$(CPP) $(CXXFLAGS) -c $< -o $@
 

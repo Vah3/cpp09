@@ -167,7 +167,6 @@ void	PmergeMe::rec_divide(lstit beg, lstit end)
 {
 	int count = 0;
 	int mid = 0;
-	int sec_beg = 0;
 	lstit for_rec = beg;
 	for (lstit it = beg; it != end; it++)
 		count++;
@@ -178,15 +177,9 @@ void	PmergeMe::rec_divide(lstit beg, lstit end)
 		if (count != 1)
 		{
 			if (count % 2 == 0)
-			{
 				mid = count / 2 - 1;
-				sec_beg = mid;
-			}
 			else
-			{
 				mid = count / 2;
-				sec_beg = mid - 1;
-			}
 			while(mid)
 			{
 				for_rec++;

@@ -6,6 +6,7 @@
 # include <sstream>
 # include <ctime>
 #include <sys/time.h>
+# include <cstdlib>
 
 # define macro_size 15
 

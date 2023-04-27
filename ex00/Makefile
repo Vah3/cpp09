@@ -1,6 +1,8 @@
 
 NAME		=	btc
-
+ifeq ($(OS), Windows_NT)
+	NAME	=	btc.exe
+endif
 CPP			=	c++
 
 CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98
@@ -8,9 +10,11 @@ CXXFLAGS	=	-Wall -Wextra -Werror -std=c++98
 SRCS		=	BitcoinExchange.cpp main.cpp
 
 OBJS		=	$(SRCS:.cpp=.o)
-
-RM			=	rm -rf
-
+ifeq ($(OS),Windows_NT)
+	RM		=   del
+else
+	RM		=	rm -rf
+endif
 %.o:%.cpp BitcoinExchange.hpp
 	$(CPP) $(CXXFLAGS) -c $< -o $@
 

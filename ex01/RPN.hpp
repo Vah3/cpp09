@@ -3,6 +3,7 @@
 # include <iostream>
 # include <stack>
 # include <stdlib.h>
+# include <limits>
 
 class RPN
 {
